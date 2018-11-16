@@ -6,7 +6,7 @@
 #include "myAcData.h"
 
 #include "usart.h"
-char buffer[256];
+static char buffer[256];
 int Ac_pf(char *format,...)
 {
 	va_list aptr;
@@ -129,26 +129,26 @@ _myAc HexStr2Bin(char *a ,uint8_t bits,void *ret)
 
 
 /*
-*a 目标串
-*b 匹配串
+*source 目标串
+*match 匹配串
 *c 匹配结果  每一个结果在*a中的偏移地址
 *d 期待匹配的结果个数   实际匹配的个数
 
 0 匹配成功
 
 */
-_myAc str_find(char *a, char *b,uint16_t *c,uint8_t *d)
+_myAc str_find(char *source, char *match,uint16_t *c,uint8_t *d)
 {
 	uint16_t i,j,flag=0,m=0;
-	uint16_t lena  = strlen(a);
-	uint16_t lenb  = strlen(b);
+	uint16_t lena  = strlen(source);
+	uint16_t lenb  = strlen(match);
 	for(i=0;i<lena;i++)
 	{
-		   if(b[0]==a[i] && (i+lenb<=lena))
+		   if(match[0]==source[i] && (i+lenb<=lena))
 			 {
 					for(j=0;j<lenb;j++)
 				 {				  
-						if(b[j]!=a[i+j] && b[j]!='?')
+						if(match[j]!=source[i+j] && match[j]!='?')
 						{
 							flag=1;
 							break;

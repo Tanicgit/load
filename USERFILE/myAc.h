@@ -22,7 +22,7 @@ typedef struct{
 
 
 int Ac_pf(char *format,...);
-			
+_myAc str_find(char *source, char *match,uint16_t *c,uint8_t *d);
 uint16_t Crc16_ModbusFarst(uint8_t *puchMsg,uint16_t usDataLen);	
 uint16_t Crc16_Modbus(uint8_t *puchMsg,uint16_t usDataLen);
 uint8_t U8checkSum(uint8_t *a,uint8_t len);	

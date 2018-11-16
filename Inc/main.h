@@ -60,6 +60,9 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define ES_CTRL_Pin GPIO_PIN_6
+#define ES_CTRL_GPIO_Port GPIOF
+
 /* ########################## Assert Selection ############################## */
 /**
   * @brief Uncomment the line below to expanse the "assert_param" macro in the 

@@ -3,25 +3,9 @@
 #include "ff.h"
 #include "fatfs.h"
 #include "string.h"
-
-uint8_t saveLoadInfo(void);
-
-
-#pragma  pack(1) 
-typedef struct{
-	uint8_t  sta;//0 无 0x01 有新的下载   0x02 正在下载
-	
-	uint32_t FileSize;
-	uint16_t FilePackNum;
-	uint16_t PackSize;
-	uint8_t  packListSum;
-	uint8_t  sum;
-}_LOAD;
-#pragma  pack() 
+#include "load.h"
 _LOAD load;
-
-
-
+uint8_t saveLoadInfo(void);
 
 struct listPack{
 	uint8_t id;//顺序
@@ -248,38 +232,10 @@ uint8_t readLoadInfo()
 	return re;
 }
 
-void loadTask()
+void loadInit()
 {
-
-	osDelay(1000);
 	readLoadInfo();
-	readPackInfo();
-	while(1)
-	{
-		osDelay(100);
-		if(load.sta==0)
-		{
-		
-		}
-		else if(load.sta==1)
-		{
-			/*检测到下载信号*/
-			if(0==NeedReLoad())
-			{			
-				if(0==saveLoadInfo())
-				{
-					load.sta=0;
-				}
-			}
-			else
-			{
-				//多次创建启动下载信息不成功处理
-			}
-		}
-		else if(load.sta==2)
-		{
-			//下载中
-		}
-	}
+	readPackInfo();	
 }
+
 
