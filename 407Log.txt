@@ -1,0 +1,353 @@
+
+ AT+RST
+
+ AT+CWMODE?
+
+ AT+CWJAP_DEF="TP-LINK_2052","ysjoowxf0713"
+
+ AT+CIPMUX=0
+
+ AT+CIPSTART="TCP","192.168.0.100",3200
+
+ AT+CIPSTART="TCP","192.168.0.100",3200
+
+ AT+CIPSTART="TCP","192.168.0.100",3200
+
+ AT+CIPSTART="TCP","192.168.0.100",3200
+
+ AT+CIPSTART="TCP","192.168.0.100",3200
+
+ BOOT:-----
+ load.sta=0
+ load.nowBin=0
+ load.nowVersion=0
+ load.FileSize=41008
+ load.FilePackNum=21
+ load.PackSize=2048
+ APP:-----
+ f_mount "0:/"
+ f_write:
+ This is STM32 working with FatFs
+ f_read:
+ This is STM32 working with FatFs
+ 
+ f_read(0:/load)
+ load.sta=0
+ load.nowBin=0
+ load.nowVersion=0
+ load.VersionToLoad=0
+ load.FileSize=41008
+ load.FilePackNum=21
+ load.PackSize=2048
+ 
+
+ AT+RST
+
+ AT+RST
+
+ AT+CWMODE?
+
+ AT+CWJAP_DEF="TP-LINK_2052","ysjoowxf0713"
+
+ AT+RST
+
+ AT+CWMODE?
+
+ AT+CWJAP_DEF="TP-LINK_2052","ysjoowxf0713"
+
+ AT+CIPMUX=0
+
+ AT+CIPSTART="TCP","192.168.0.100",3200
+
+ AT+CIPMODE=1
+
+ AT+CIPSEND
+
+ net ok
+ -----updataCheck()-----
+ TX->@0F0000000100000100000001000012
+
+ RX->@1800000081000001000000010200012CA000000004A1A3B2
+
+ f_write(0:/pack)
+ f_write(0:/load)
+ -----loading()-----
+ TX->@110001000100000100000002000000041A
+
+ RX-> pack0000 num = 2088
+ f_write
+ -----loading()-----
+ TX->@110002000100000100000002010000041C
+
+ RX-> pack0001 num = 2088
+ f_write
+ -----loading()-----
+ TX->@110003000100000100000002020000041E
+
+ RX-> pack0002 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100040001000001000000020300000420
+
+ RX-> pack0003 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100050001000001000000020400000422
+
+ RX-> pack0004 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100060001000001000000020500000424
+
+ RX-> pack0005 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100070001000001000000020600000426
+
+ RX-> pack0006 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100080001000001000000020700000428
+
+ RX-> pack0007 num = 2088
+ f_write
+ -----loading()-----
+ TX->@110009000100000100000002080000042A
+
+ RX-> pack0008 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11000A000100000100000002090000042C
+
+ RX-> pack0009 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11000B0001000001000000020A0000042E
+
+ RX-> pack0010 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11000C0001000001000000020B00000430
+
+ RX-> pack0011 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11000D0001000001000000020C00000432
+
+ RX-> pack0012 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11000E0001000001000000020D00000434
+
+ RX-> pack0013 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11000F0001000001000000020E00000436
+
+ RX-> pack0014 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100100001000001000000020F00000438
+
+ RX-> pack0015 num = 2088
+ f_write
+ -----loading()-----
+ TX->@110011000100000100000002100000043A
+
+ RX-> pack0016 num = 2088
+ f_write
+ -----loading()-----
+ TX->@110012000100000100000002110000043C
+
+ RX-> pack0017 num = 2088
+ f_write
+ -----loading()-----
+ TX->@110013000100000100000002120000043E
+
+ RX-> pack0018 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100140001000001000000021300000440
+
+ RX-> pack0019 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100150001000001000000021400000442
+
+ RX-> pack0020 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100160001000001000000021500000444
+
+ RX-> pack0021 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100170001000001000000021600000446
+
+ RX-> pack0022 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100180001000001000000021700000448
+
+ RX-> pack0023 num = 2088
+ f_write
+ -----loading()-----
+ TX->@110019000100000100000002180000044A
+
+ RX-> pack0024 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11001A000100000100000002190000044C
+
+ RX-> pack0025 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11001B0001000001000000021A0000044E
+
+ RX-> pack0026 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11001C0001000001000000021B00000450
+
+ RX-> pack0027 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11001D0001000001000000021C00000452
+
+ RX-> pack0028 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11001E0001000001000000021D00000454
+
+ RX-> pack0029 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11001F0001000001000000021E00000456
+
+ RX-> pack0030 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100200001000001000000021F00000458
+
+ RX-> pack0031 num = 2088
+ f_write
+ -----loading()-----
+ TX->@110021000100000100000002200000045A
+
+ RX-> pack0032 num = 2088
+ f_write
+ -----loading()-----
+ TX->@110022000100000100000002210000045C
+
+ RX-> pack0033 num = 2088
+ f_write
+ -----loading()-----
+ TX->@110023000100000100000002220000045E
+
+ RX-> pack0034 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100240001000001000000022300000460
+
+ RX-> pack0035 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100250001000001000000022400000462
+
+ RX-> pack0036 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100260001000001000000022500000464
+
+ RX-> pack0037 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100270001000001000000022600000466
+
+ RX-> pack0038 num = 2088
+ f_write
+ -----loading()-----
+ TX->@1100280001000001000000022700000468
+
+ RX-> pack0039 num = 2088
+ f_write
+ -----loading()-----
+ TX->@11002900010000010000000228002C0092
+
+ RX-> pack0040 num = 128
+ f_write
+ -----loading()-----
+ -----binSave()-----
+ f_write(0:/pack)
+ f_write(0:/load)
+ -----fileCopy()-----
+ f_write(0:/load)
+ -----load.sta==5-----
+ BOOT:-----
+ load.sta=5
+ load.nowBin=1
+ load.nowVersion=0
+ load.FileSize=41004
+ load.FilePackNum=41
+ load.PackSize=1024
+ APP:-----
+ f_mount "0:/"
+ f_write:
+ This is STM32 working with FatFs
+ f_read:
+ This is STM32 working with FatFs
+ 
+ f_read(0:/load)
+ f_read(0:/pack)
+ load.sta=6
+ load.nowBin=1
+ load.nowVersion=0
+ load.VersionToLoad=2
+ load.FileSize=41004
+ load.FilePackNum=41
+ load.PackSize=1024
+ 
+
+ AT+RST
+
+ AT+RST
+
+ AT+CWMODE?
+
+ AT+CWJAP_DEF="TP-LINK_2052","ysjoowxf0713"
+
+ AT+CIPMUX=0
+
+ AT+CIPSTART="TCP","192.168.0.100",3200
+
+ AT+CIPMODE=1
+
+ AT+CIPSEND
+
+ net ok
+ -----load.sta==6--0---
+ f_write(0:/load)
+ -----updataCheck()-----
+ TX->@0F0000000102000100000001000014
+
+ RX->@18000000810200010000000102000002A8CFC802020000E4
+
+ -----updataCheck()-----
+ TX->@0F0001000102000100000001000015
+
+ RX->@18000100810200010000000102000002A8CFC802020000E5
+
+ -----updataCheck()-----
+ TX->@0F0002000102000100000001000016
+
+ RX->@18000200810200010000000102000002A8CFC802020000E6
+
+ -----updataCheck()-----
+ TX->@0F0003000102000100000001000017
+
+ RX->@18000300810200010000000102000002A8CFC802020000E7
+
+ -----updataCheck()-----
+ TX->@0F0004000102000100000001000018
+
+ RX->@18000400810200010000000102000002A8CFC802020000E8
