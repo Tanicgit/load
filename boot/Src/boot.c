@@ -5,7 +5,8 @@
 #include "flash.h"
 #pragma  pack(1) 
 typedef struct{
-	uint8_t  sta;//0 无 0x01 有新的下载   0x02 正在下载 0x03下载完成
+	uint8_t  sta;//0没有升级 2下载包中  3合成包中 4升级文件准备 5app通知boot网络升级 
+					//		6boot通知app网络升级成功   7app通知boot恢复出场固件  8 boot通知app恢复出场固件成功
 	uint8_t  nowBin;//当前运行的bin文件  1.bin  2.bin  上点启动 如果sta==3 则切换固件并修改本位
 	uint16_t	nowVersion;//当前运行的版本
 	uint16_t	VersionToLoad;//准备下载的版本
@@ -62,16 +63,29 @@ uint8_t saveLoadInfo()
 	return 0;
 }
 /*读取下载头信息*/
-uint8_t readLoadInfo()
+void readLoadInfo()
 {
 	char filename[16];
 	FRESULT res;
 	uint32_t bytesread, bytestoread; 
 	uint8_t re=0;
+	
+	sprintf(filename,"%spack",SDPath);
+	if((res=f_open(&SDFile, filename, FA_READ)) != FR_OK)
+	{
+		if(res==4)f_open(&SDFile, filename, FA_CREATE_ALWAYS | FA_WRITE);
+	}
+	f_close(&SDFile);
 	sprintf(filename,"%sload",SDPath);
 	if((res=f_open(&SDFile, filename, FA_READ)) != FR_OK)
 	{
-		re = 0XFF;
+		if(res==4)f_open(&SDFile, filename, FA_CREATE_ALWAYS | FA_WRITE);
+	}
+	f_close(&SDFile);
+	if((res=f_open(&SDFile, filename, FA_READ)) != FR_OK)
+	{
+		_Log("err=%d",res);
+		_Error_Handler(__FILE__, __LINE__);
 	}
 	else
 	{
@@ -80,8 +94,8 @@ uint8_t readLoadInfo()
 		f_close(&SDFile);
 		if(res != FR_OK)
 		{
+			_Log("err=%d",res);
 			_Error_Handler(__FILE__, __LINE__);
-			re = 1;
 		}
 		else if((bytesread != bytestoread))	
 		{
@@ -96,9 +110,14 @@ uint8_t readLoadInfo()
 			if(load.FileSize!= load.lastPackSize + (load.FilePackNum-1)*load.PackSize)
 			{
 				re = 0xff;
-			}
-			
+			}		
 		}
+	}
+	if(re==0xff)//load 校验错误 清0
+	{
+		_Log("load err,clear 0");
+		memset(&load,0,sizeof(_LOAD));
+		saveLoadInfo();
 	}
 	_Log("load.sta=%d",load.sta);
 	_Log("load.nowBin=%d",load.nowBin);
@@ -107,118 +126,135 @@ uint8_t readLoadInfo()
 	_Log("load.FileSize=%d",load.FileSize);
 	_Log("load.FilePackNum=%d",load.FilePackNum);
 	_Log("load.PackSize=%d",load.PackSize);
-	return re;
 }
 
 uint8_t rxfileBuf[512];
 /*
--2 flash写完成  但是成功标志写失败
--1 boot 错误 已经更新部分内部flash后出错
-0 OK    升级成功
-1 不需要升级 没有升级 
-2 最新的bin文件打开失败没有进行内部flash更新
-3 load文件读取错误 升级未进行
 */
-int8_t boot()
+void boot()
 {
-	int8_t err=0;
+	uint8_t err=0;
 	int32_t size=0;
 	uint32_t addr = ADDR_FLASH_SECTOR_2;
 	uint32_t rw=0;
+	uint8_t  updata_type=0;
 	char filename[16];
 	FRESULT res;
-	err = readLoadInfo();
-	if(err==0)
+	readLoadInfo();
+	
+	sprintf(filename,"%sdefault.bin",SDPath);
+	if(FR_OK!=f_open(&SDFile, filename, FA_READ))
 	{
-		sprintf(filename,"%shandup.txt",SDPath);
-		res = f_open(&SDFile, filename, FA_READ);
-		if(res==FR_OK) f_close(&SDFile);
-		if(load.sta==5||res==FR_OK)
+		_Log("have no default.bin");
+		_Error_Handler(__FILE__, __LINE__);	
+	}
+	f_close(&SDFile);
+	
+	sprintf(filename,"%shandup.txt",SDPath);
+	res = f_open(&SDFile, filename, FA_READ);
+	if(res==FR_OK) 
+	{
+		updata_type=1;
+		f_close(&SDFile);
+		sprintf(filename,"%sdefault.bin",SDPath);
+	}
+	else if(load.sta==5)
+	{
+		updata_type=2;
+		if(load.nowBin==0)
 		{
-			
-			if(load.nowBin==0)
-			{
-				sprintf(filename,"%s0.bin",SDPath);
-			}
-			else
-			{
-				sprintf(filename,"%s1.bin",SDPath);
-			}
-			res=f_open(&SDFile, filename, FA_READ);
-			if(res==FR_OK)
-			{
-				HAL_FLASH_Unlock();
-				EraseSpace(load.FileSize);
-				size = f_size(&SDFile);
-				while(size>0)
-				{
-					res = f_read(&SDFile, rxfileBuf, 512, (void *)&rw);
-					if(res==FR_OK&&rw!=0)
-					{
-						if(0!=Flash_If_Write(rxfileBuf,addr,rw))
-						{
-							err = -1;
-							break;
-						}
-						addr += rw;
-						size -= rw;
-					}
-					else 
-					{
-						err = -1;
-						break;
-					}
-				}
-				HAL_FLASH_Lock();
-				if(err==0&&load.sta==5)
-				{
-					if(load.sta==5)
-					{
-						load.sta = 6;
-						load.bootErrCnt = 0;
-						if(0!=saveLoadInfo()) err = -2;
-					}
-					else
-					{
-						sprintf(filename,"%shandup.txt",SDPath);//手动修改SD卡文件升级
-						f_unlink(filename);
-						load.nowBin=0;
-						load.sta=0;			
-						if(0!=saveLoadInfo()) err = -2;
-					}
-				}
-			}
-			else
-			{
-				err = 2;
-			}
-		}
-		else if(load.sta==0)
-		{
-			err = 0;
+			sprintf(filename,"%s0.bin",SDPath);
 		}
 		else
 		{
-			err = 1;
+			sprintf(filename,"%s1.bin",SDPath);
+		}	
+		
+		if(FR_OK!=f_open(&SDFile, filename, FA_READ))
+		{
+			sprintf(filename,"%sdefault.bin",SDPath);
+			updata_type=4;
 		}
+		f_close(&SDFile);
 	}
-	else
+	else if(load.sta==7)//强制恢复出场默认固件
 	{
-		err = 3;
+		updata_type=3;
+		sprintf(filename,"%sdefault.bin",SDPath);
 	}
-	
-	if(err>0)
+	if(updata_type)
+	{ 
+		/*copy bin*/
+		res=f_open(&SDFile, filename, FA_READ);
+		if(res!=FR_OK)
+		{				
+			_Log("err=%d",res);
+			_Error_Handler(__FILE__, __LINE__);		
+		}
+		HAL_FLASH_Unlock();			
+		size = f_size(&SDFile);
+		EraseSpace(size);
+		while(size>0){
+			res = f_read(&SDFile, rxfileBuf, 512, (void *)&rw);
+			if(res==FR_OK&&rw!=0){
+				if(0!=Flash_If_Write(rxfileBuf,addr,rw)){
+					err = 1;
+					break;
+				}
+				addr += rw;
+				size -= rw;
+			}
+			else{
+				err = 1;
+				break;
+			}
+		}
+		HAL_FLASH_Lock();
+		f_close(&SDFile);/////////
+	}
+	/*copy bin end*/
+	if(err==0)
 	{
-		load.sta = 5;
-		if(load.bootErrCnt<5)load.bootErrCnt++;
-		else load.sta=0;
-		if(0!=saveLoadInfo())err = -2;	
+		if(updata_type==1||updata_type==4)
+		{
+			sprintf(filename,"%shandup.txt",SDPath);
+			f_unlink(filename);
+			load.sta=0;
+			load.nowVersion=0;
+			load.nowBin=0xff;
+			saveLoadInfo();
+		}
+		else if(updata_type==2)
+		{
+			load.sta = 6;
+			load.nowVersion=load.VersionToLoad;
+			saveLoadInfo();
+		}
+		else if(updata_type==3)
+		{
+			load.sta = 8;	
+			load.nowVersion=0;
+			load.nowBin=0xff;
+			saveLoadInfo();
+		}
+		else
+		{
+			//未发生升级
+		}	
 	}
-	else if(err<0)
+	else//升级内部flash发生错误
 	{
-		HAL_Delay(10000);
+		if(load.bootErrCnt<3)
+		{
+			load.bootErrCnt++;
+			saveLoadInfo();
+			HAL_NVIC_SystemReset();
+		}
+		else{
+			_Log("write flash err = %d",load.bootErrCnt);
+			_Error_Handler(__FILE__, __LINE__);	
+		}	
 	}
-	return err;
 }
 
 

@@ -97,6 +97,7 @@ uint8_t fatfsTeat(FATFS *FatFs,char *Path,FIL *MyFile,char *fname)
 			if((byteswritten == 0) || (res != FR_OK))
 			{
 				/* 'STM32.TXT' file Write or EOF Error */
+				f_close(MyFile);
 				return 1;
 			}
 			else

@@ -75,7 +75,7 @@
 /* USER CODE BEGIN Private defines */
 int Ac_pf(char *format,...);
 #define _Log(...)  {\
-											Ac_pf("\r\n "); \
+											Ac_pf("\r\nboot: "); \
 											Ac_pf(__VA_ARGS__);\
 										}
 /* USER CODE END Private defines */

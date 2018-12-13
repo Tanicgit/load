@@ -43,7 +43,8 @@
   * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
   * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
   * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
+	* aliyun:
+  * https://promotion.aliyun.com/ntms/yunparter/invite.html?userCode=qz12zb2f
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
@@ -115,14 +116,9 @@ int main(void)
   MX_SDIO_SD_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-	_Log("BOOT:-----");
 	if(SD_STATUS==0)
 	{
-		if(boot()<0)
-		{
-			HAL_Delay(3000);
-			HAL_NVIC_SystemReset();
-		}
+		boot();
 		temp = *(__IO uint32_t*)USBD_DFU_APP_DEFAULT_ADD;
 		if(((temp) & 0x2FFC0000 ) == 0x20000000)
 		{
@@ -137,7 +133,7 @@ int main(void)
 
 
   /* USER CODE END 2 */
-	_Log("BOOT_err");
+	_Log("SD_err");
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -235,6 +231,8 @@ int Ac_pf(char *format,...)
 void _Error_Handler(char *file, int line)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
+	_Log("%s,%d",file,line);
+	
   /* User can add his own implementation to report the HAL error return state */
   while(1)
   {
